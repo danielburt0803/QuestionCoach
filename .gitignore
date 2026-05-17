@@ -10,3 +10,6 @@ Thumbs.db
 *-swa-oryx/
 # npm temp
 package-lock.json
+# Project context files (not for public consumption)
+memory.md
+build.md
