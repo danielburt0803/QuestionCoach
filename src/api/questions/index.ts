@@ -14,11 +14,12 @@ async function fetchQuestions(): Promise<Question[]> {
     throw new Error('BLOB_CONNECTION_STRING and QUESTIONS_BLOB_URL must be set');
   }
 
-  const blobClient = new BlobServiceClient(connectionString);
-  const [accountAndContainer, ...blobParts] = blobUrl.replace('https://', '').split('/');
-  const containerName = blobParts[0];
-  const blobName = blobParts.slice(1).join('/') || 'questions.json';
+  const url = new URL(blobUrl);
+  const pathParts = url.pathname.split('/').filter(Boolean);
+  const containerName = pathParts[0];
+  const blobName = pathParts.slice(1).join('/') || 'questions.json';
 
+  const blobClient = BlobServiceClient.fromConnectionString(connectionString);
   const containerClient = blobClient.getContainerClient(containerName);
   const blob = containerClient.getBlobClient(blobName);
   const download = await blob.downloadToBuffer();
