@@ -12,19 +12,17 @@ import {
   QuestionCircleRegular,
   LinkRegular,
   CheckmarkCircleRegular,
-  DismissCircleRegular,
-  RecordRegular,
   CircleRegular,
 } from '@fluentui/react-icons';
 import type { Question, QuestionProgress, QuestionStatus } from '../../types';
 
 const STATUS_OPTIONS: QuestionStatus[] = ['not-started', 'asked', 'answered', 'skipped'];
 
-const STATUS_CONFIG: Record<QuestionStatus, { label: string; color: 'informative' | 'success' | 'subtle' | 'warning'; Icon: React.FC }> = {
-  'not-started': { label: 'Not Started', color: 'subtle', Icon: CircleRegular },
-  asked: { label: 'Asked', color: 'informative', Icon: RecordRegular },
-  answered: { label: 'Answered', color: 'success', Icon: CheckmarkCircleRegular },
-  skipped: { label: 'Skipped', color: 'warning', Icon: DismissCircleRegular },
+const STATUS_LABELS: Record<QuestionStatus, string> = {
+  'not-started': 'Not Started',
+  asked: 'Asked',
+  answered: 'Answered',
+  skipped: 'Skipped',
 };
 
 const useStyles = makeStyles({
@@ -121,19 +119,18 @@ export function QuestionCard({ question, progress, onProgressChange }: QuestionC
 
           <div className={styles.statusRow}>
             {STATUS_OPTIONS.map(s => {
-              const cfg = STATUS_CONFIG[s];
               const isActive = localStatus === s;
               return (
                 <Badge
                   key={s}
                   className={styles.statusBadge}
                   appearance={isActive ? 'filled' : 'tint'}
-                  color={cfg.color}
+                  color="success"
                   size="small"
-                  icon={<cfg.Icon />}
+                  icon={isActive ? <CheckmarkCircleRegular /> : <CircleRegular />}
                   onClick={() => handleStatusClick(s)}
                 >
-                  {cfg.label}
+                  {STATUS_LABELS[s]}
                 </Badge>
               );
             })}
