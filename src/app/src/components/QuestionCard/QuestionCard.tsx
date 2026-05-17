@@ -7,7 +7,6 @@ import {
   Badge,
   Link,
   Textarea,
-  Tooltip,
 } from '@fluentui/react-components';
 import {
   QuestionCircleRegular,
@@ -19,7 +18,7 @@ import {
 } from '@fluentui/react-icons';
 import type { Question, QuestionProgress, QuestionStatus } from '../../types';
 
-const STATUS_CYCLE: QuestionStatus[] = ['not-started', 'asked', 'answered', 'skipped'];
+const STATUS_OPTIONS: QuestionStatus[] = ['not-started', 'asked', 'answered', 'skipped'];
 
 const STATUS_CONFIG: Record<QuestionStatus, { label: string; color: 'informative' | 'success' | 'subtle' | 'warning'; Icon: React.FC }> = {
   'not-started': { label: 'Not Started', color: 'subtle', Icon: CircleRegular },
@@ -45,16 +44,27 @@ const useStyles = makeStyles({
     fontSize: tokens.fontSizeBase300,
     lineHeight: tokens.lineHeightBase300,
   },
+  statusRow: {
+    display: 'flex',
+    gap: tokens.spacingHorizontalXS,
+    marginTop: tokens.spacingVerticalXS,
+    flexWrap: 'wrap',
+  },
+  statusBadge: {
+    cursor: 'pointer',
+    userSelect: 'none',
+  },
+  statusBadgeInactive: {
+    opacity: 0.45,
+    cursor: 'pointer',
+    userSelect: 'none',
+  },
   meta: {
     display: 'flex',
     alignItems: 'center',
     gap: tokens.spacingHorizontalS,
     marginTop: tokens.spacingVerticalXS,
     flexWrap: 'wrap',
-  },
-  badge: {
-    cursor: 'pointer',
-    userSelect: 'none',
   },
   refLink: {
     display: 'flex',
@@ -85,12 +95,6 @@ export function QuestionCard({ question, progress, onProgressChange }: QuestionC
   const notes = progress?.notes ?? '';
   const [localNotes, setLocalNotes] = useState(notes);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const cfg = STATUS_CONFIG[status];
-
-  const cycleStatus = useCallback(() => {
-    const next = STATUS_CYCLE[(STATUS_CYCLE.indexOf(status) + 1) % STATUS_CYCLE.length];
-    onProgressChange({ status: next, notes: localNotes });
-  }, [status, localNotes, onProgressChange]);
 
   const handleNotesChange = useCallback((value: string) => {
     setLocalNotes(value);
@@ -108,19 +112,28 @@ export function QuestionCard({ question, progress, onProgressChange }: QuestionC
         <QuestionCircleRegular fontSize={20} style={{ marginTop: 2, flexShrink: 0, color: tokens.colorBrandForeground1 }} />
         <div style={{ flex: 1 }}>
           <Text className={styles.questionText}>{question.question}</Text>
+
+          <div className={styles.statusRow}>
+            {STATUS_OPTIONS.map(s => {
+              const cfg = STATUS_CONFIG[s];
+              const isActive = status === s;
+              return (
+                <Badge
+                  key={s}
+                  className={isActive ? styles.statusBadge : styles.statusBadgeInactive}
+                  appearance={isActive ? 'filled' : 'outline'}
+                  color={cfg.color}
+                  size="small"
+                  icon={<cfg.Icon />}
+                  onClick={() => { if (!isActive) onProgressChange({ status: s, notes: localNotes }); }}
+                >
+                  {cfg.label}
+                </Badge>
+              );
+            })}
+          </div>
+
           <div className={styles.meta}>
-            <Tooltip content={`Click to cycle status: ${STATUS_CYCLE.join(' → ')}`} relationship="description">
-              <Badge
-                className={styles.badge}
-                appearance="filled"
-                color={cfg.color}
-                size="small"
-                onClick={cycleStatus}
-                icon={<cfg.Icon />}
-              >
-                {cfg.label}
-              </Badge>
-            </Tooltip>
             {question.subArea && (
               <Text className={styles.subAreaTag}>{question.area} › {question.subArea}</Text>
             )}
@@ -137,6 +150,7 @@ export function QuestionCard({ question, progress, onProgressChange }: QuestionC
               )
             )}
           </div>
+
           <Textarea
             className={styles.notes}
             placeholder="Notes from the workshop…"

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
   makeStyles,
+  mergeClasses,
   tokens,
   Text,
   Button,
@@ -21,7 +22,7 @@ import {
   RadioGroup,
   Radio,
   Select,
-  Divider,
+  Tooltip,
 } from '@fluentui/react-components';
 import {
   AddRegular,
@@ -122,12 +123,22 @@ const useStyles = makeStyles({
     textAlign: 'center',
     color: tokens.colorNeutralForeground3,
   },
-  menuBtn: {
+  actionBtn: {
     flexShrink: 0,
     opacity: 0,
-    ':focus': { opacity: 1 },
+    ':focus-visible': { opacity: 1 },
   },
-  menuBtnVisible: {
+  actionBtnVisible: {
+    opacity: 1,
+  },
+  deleteBtn: {
+    flexShrink: 0,
+    opacity: 0,
+    color: tokens.colorPaletteRedForeground3,
+    ':hover': { color: tokens.colorPaletteRedForeground3 },
+    ':focus-visible': { opacity: 1 },
+  },
+  deleteBtnVisible: {
     opacity: 1,
   },
   deptIcon: {
@@ -269,9 +280,6 @@ export function LeftNav({ activeProjectId, activeDepartmentId, onSelectDepartmen
   }
 
   function commitRenameDept() {
-    if (!renamingDept || !renameProjectValue) {
-      // Use renameDeptValue
-    }
     if (!renamingDept || !renameDeptValue.trim()) { setRenamingDept(null); return; }
     const project = projects?.find(p => p.id === renamingDept.projectId);
     if (!project) { setRenamingDept(null); return; }
@@ -362,6 +370,7 @@ export function LeftNav({ activeProjectId, activeDepartmentId, onSelectDepartmen
           {projects.map(project => {
             const isExpanded = expandedProjects.has(project.id) || project.id === activeProjectId;
             const isRenaming = renamingProject === project.id;
+            const isHovered = hoveredProject === project.id;
 
             return (
               <div key={project.id}>
@@ -396,10 +405,20 @@ export function LeftNav({ activeProjectId, activeDepartmentId, onSelectDepartmen
                     <Text className={styles.projectName}>{project.name}</Text>
                   )}
 
+                  <Tooltip content="Delete project" relationship="label">
+                    <Button
+                      className={mergeClasses(styles.deleteBtn, isHovered && styles.deleteBtnVisible)}
+                      icon={<DeleteRegular />}
+                      appearance="subtle"
+                      size="small"
+                      onClick={e => { e.stopPropagation(); setDeletingProject(project.id); }}
+                    />
+                  </Tooltip>
+
                   <Menu>
                     <MenuTrigger disableButtonEnhancement>
                       <Button
-                        className={`${styles.menuBtn} ${hoveredProject === project.id ? styles.menuBtnVisible : ''}`}
+                        className={mergeClasses(styles.actionBtn, isHovered && styles.actionBtnVisible)}
                         icon={<MoreHorizontalRegular />}
                         appearance="subtle"
                         size="small"
@@ -420,13 +439,6 @@ export function LeftNav({ activeProjectId, activeDepartmentId, onSelectDepartmen
                         >
                           Add Department
                         </MenuItem>
-                        <Divider />
-                        <MenuItem
-                          icon={<DeleteRegular />}
-                          onClick={e => { e.stopPropagation(); setDeletingProject(project.id); }}
-                        >
-                          Delete Project
-                        </MenuItem>
                       </MenuList>
                     </MenuPopover>
                   </Menu>
@@ -438,11 +450,13 @@ export function LeftNav({ activeProjectId, activeDepartmentId, onSelectDepartmen
                       const isActive = dept.id === activeDepartmentId && project.id === activeProjectId;
                       const isRenamingDept = renamingDept?.projectId === project.id && renamingDept?.deptId === dept.id;
                       const deptHoverKey = `${project.id}:${dept.id}`;
+                      const isDeptHovered = hoveredDept === deptHoverKey;
+                      const canDelete = project.departments.length > 1;
 
                       return (
                         <div
                           key={dept.id}
-                          className={`${styles.deptRow} ${isActive ? styles.activeDept : ''}`}
+                          className={mergeClasses(styles.deptRow, isActive ? styles.activeDept : undefined)}
                           onClick={() => { if (!isRenamingDept) onSelectDepartment(project.id, dept.id); }}
                           onMouseEnter={() => setHoveredDept(deptHoverKey)}
                           onMouseLeave={() => setHoveredDept(null)}
@@ -468,15 +482,29 @@ export function LeftNav({ activeProjectId, activeDepartmentId, onSelectDepartmen
                               onClick={e => e.stopPropagation()}
                             />
                           ) : (
-                            <Text className={`${styles.deptName} ${isActive ? styles.activeDeptName : ''}`}>
+                            <Text className={mergeClasses(styles.deptName, isActive ? styles.activeDeptName : undefined)}>
                               {dept.name}
                             </Text>
                           )}
 
+                          <Tooltip
+                            content={canDelete ? 'Delete department' : 'Cannot delete the only department'}
+                            relationship="label"
+                          >
+                            <Button
+                              className={mergeClasses(styles.deleteBtn, isDeptHovered && styles.deleteBtnVisible)}
+                              icon={<DeleteRegular />}
+                              appearance="subtle"
+                              size="small"
+                              disabled={!canDelete}
+                              onClick={e => { e.stopPropagation(); setDeletingDept({ projectId: project.id, deptId: dept.id }); }}
+                            />
+                          </Tooltip>
+
                           <Menu>
                             <MenuTrigger disableButtonEnhancement>
                               <Button
-                                className={`${styles.menuBtn} ${hoveredDept === deptHoverKey ? styles.menuBtnVisible : ''}`}
+                                className={mergeClasses(styles.actionBtn, isDeptHovered && styles.actionBtnVisible)}
                                 icon={<MoreHorizontalRegular />}
                                 appearance="subtle"
                                 size="small"
@@ -490,14 +518,6 @@ export function LeftNav({ activeProjectId, activeDepartmentId, onSelectDepartmen
                                   onClick={e => { e.stopPropagation(); startRenameDept(project.id, dept.id, dept.name); }}
                                 >
                                   Rename
-                                </MenuItem>
-                                <Divider />
-                                <MenuItem
-                                  icon={<DeleteRegular />}
-                                  disabled={project.departments.length <= 1}
-                                  onClick={e => { e.stopPropagation(); setDeletingDept({ projectId: project.id, deptId: dept.id }); }}
-                                >
-                                  Delete Department
                                 </MenuItem>
                               </MenuList>
                             </MenuPopover>
