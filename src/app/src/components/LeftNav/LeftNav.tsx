@@ -22,7 +22,7 @@ import {
   RadioGroup,
   Radio,
   Select,
-  Tooltip,
+  Divider,
 } from '@fluentui/react-components';
 import {
   AddRegular,
@@ -129,16 +129,6 @@ const useStyles = makeStyles({
     ':focus-visible': { opacity: 1 },
   },
   actionBtnVisible: {
-    opacity: 1,
-  },
-  deleteBtn: {
-    flexShrink: 0,
-    opacity: 0,
-    color: tokens.colorPaletteRedForeground3,
-    ':hover': { color: tokens.colorPaletteRedForeground3 },
-    ':focus-visible': { opacity: 1 },
-  },
-  deleteBtnVisible: {
     opacity: 1,
   },
   deptIcon: {
@@ -405,16 +395,6 @@ export function LeftNav({ activeProjectId, activeDepartmentId, onSelectDepartmen
                     <Text className={styles.projectName}>{project.name}</Text>
                   )}
 
-                  <Tooltip content="Delete project" relationship="label">
-                    <Button
-                      className={mergeClasses(styles.deleteBtn, isHovered && styles.deleteBtnVisible)}
-                      icon={<DeleteRegular />}
-                      appearance="subtle"
-                      size="small"
-                      onClick={e => { e.stopPropagation(); setDeletingProject(project.id); }}
-                    />
-                  </Tooltip>
-
                   <Menu>
                     <MenuTrigger disableButtonEnhancement>
                       <Button
@@ -438,6 +418,13 @@ export function LeftNav({ activeProjectId, activeDepartmentId, onSelectDepartmen
                           onClick={e => { e.stopPropagation(); setAddDeptForProject(project.id); setExpandedProjects(prev => new Set(prev).add(project.id)); }}
                         >
                           Add Department
+                        </MenuItem>
+                        <Divider />
+                        <MenuItem
+                          icon={<DeleteRegular />}
+                          onClick={e => { e.stopPropagation(); setDeletingProject(project.id); }}
+                        >
+                          Delete Project
                         </MenuItem>
                       </MenuList>
                     </MenuPopover>
@@ -487,20 +474,6 @@ export function LeftNav({ activeProjectId, activeDepartmentId, onSelectDepartmen
                             </Text>
                           )}
 
-                          <Tooltip
-                            content={canDelete ? 'Delete department' : 'Cannot delete the only department'}
-                            relationship="label"
-                          >
-                            <Button
-                              className={mergeClasses(styles.deleteBtn, isDeptHovered && styles.deleteBtnVisible)}
-                              icon={<DeleteRegular />}
-                              appearance="subtle"
-                              size="small"
-                              disabled={!canDelete}
-                              onClick={e => { e.stopPropagation(); setDeletingDept({ projectId: project.id, deptId: dept.id }); }}
-                            />
-                          </Tooltip>
-
                           <Menu>
                             <MenuTrigger disableButtonEnhancement>
                               <Button
@@ -518,6 +491,14 @@ export function LeftNav({ activeProjectId, activeDepartmentId, onSelectDepartmen
                                   onClick={e => { e.stopPropagation(); startRenameDept(project.id, dept.id, dept.name); }}
                                 >
                                   Rename
+                                </MenuItem>
+                                <Divider />
+                                <MenuItem
+                                  icon={<DeleteRegular />}
+                                  disabled={!canDelete}
+                                  onClick={e => { e.stopPropagation(); setDeletingDept({ projectId: project.id, deptId: dept.id }); }}
+                                >
+                                  Delete Department
                                 </MenuItem>
                               </MenuList>
                             </MenuPopover>
