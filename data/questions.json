@@ -1,22 +1,22 @@
 [
   {
-    "id": "7349b135-c93b-4647-834c-9fc85c2cf9f7",
+    "id": "efcda7ba-6259-4d86-ac99-bd5ed9543a78",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Attachment",
     "question": "What file size limitations do you want to apply for email attachments?",
-    "reference": "Configure email | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/customer-service-hub-user-guide-email-admin#configure-email-attachment-size-limitations"
   },
   {
-    "id": "c0724eea-4233-4860-aebe-b243279f9e47",
+    "id": "9621eed7-2820-4c19-93e9-484f5d6493b0",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Attachment",
     "question": "What file types do you want to block from upload as email attachments?",
-    "reference": "Configure email | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/customer-service-hub-user-guide-email-admin#manage-blocked-attachment-file-types"
   },
   {
-    "id": "a95ffc6e-caf6-4e39-9079-2242e32c56ef",
+    "id": "420a1f3b-b644-49f5-a299-f890b5db4243",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Attachment",
@@ -24,23 +24,23 @@
     "reference": ""
   },
   {
-    "id": "9de8e69e-d569-4a1c-98d5-127cbe76cdd0",
+    "id": "00835371-2373-4256-8770-49482447747d",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Attachment",
     "question": "Do you want CSRs to drag and drop attachments to emails?",
-    "reference": "Enable enhanced experience for email attachments | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/add-enhanced-attachment-control#enable-drag-and-drop-for-attachments-in-the-rich-text-editor"
   },
   {
-    "id": "e6953d4a-99ce-4c28-8835-96f72dc8ed28",
+    "id": "372f546e-ef1b-436d-a363-e586a1f400bf",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Attachment",
     "question": "Do you want CSRs to delete attachments from emails?",
-    "reference": "Enable enhanced experience for email attachments | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/add-enhanced-attachment-control#delete-attachments-for-sent-emails"
   },
   {
-    "id": "1dfad014-6534-4921-9ec0-54d1901b5618",
+    "id": "a683be0e-1274-4172-a534-f249f3311fd6",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Automation",
@@ -48,7 +48,7 @@
     "reference": ""
   },
   {
-    "id": "8104f1f1-1cdd-4976-8a13-d4eedd469aef",
+    "id": "7761daef-0ac4-47dd-a932-caea41a9de27",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Automation",
@@ -56,79 +56,79 @@
     "reference": ""
   },
   {
-    "id": "c64bf040-a88f-4c05-b59c-9f033bb53a69",
+    "id": "53c9093d-8249-4603-9dff-acc789bed57f",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Copilot",
     "question": "Do you want Copilot to insert personalised content into email templates?",
-    "reference": "Add Copilot prompts to email templates | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/add-prompt-email-template"
   },
   {
-    "id": "1dfe43ef-58b7-46a6-8596-6121545a26f3",
+    "id": "58bec9d8-de43-4f86-8f5b-852b846d7c94",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Copilot",
     "question": "Do you want Copilot to draft emails?",
-    "reference": "Enable Copilot to draft emails | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/contact-center/administer/copilot-email-enable"
   },
   {
-    "id": "97a88314-f79d-440c-bff7-8e5ddd1e490a",
+    "id": "021095b5-69f0-4c36-ab4e-6483cd7b46b1",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Copilot",
     "question": "Do you want Copilot to use knowledge sources when drafting emails?",
-    "reference": "Enable Copilot to draft emails | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/contact-center/administer/copilot-email-enable#enable-knowledge-sources-for-copilot-to-draft-emails"
   },
   {
-    "id": "019e50eb-c417-4fa4-bbee-bbda95735ee0",
+    "id": "5d205190-1cdb-451e-b028-758c3225853f",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Copilot",
     "question": "Do you want Copilot to recommend email templates?",
-    "reference": "Enable Copilot to draft emails | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/contact-center/administer/copilot-email-enable#enable-copilot-to-recommend-email-templates"
   },
   {
-    "id": "a5743d46-7a58-4f65-afd2-9223464d1f26",
+    "id": "ae5901e5-57be-4edb-ba97-1c8065cbf605",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Experience",
     "question": "Do you want CSRs to reply to emails with a personal or general signature?",
-    "reference": "Use an email signature - Power Apps | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/power-apps/user/email-signature"
   },
   {
-    "id": "ba120535-2a7d-499c-a2e0-8ed0ef1618c2",
+    "id": "dea3a308-ae77-4324-b9db-728d09bdf161",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Experience",
     "question": "Do you want to use specific fonts in emails?",
-    "reference": "Configure the email experience in customer engagement apps | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/customer-service-hub-user-guide-email-font-admin"
   },
   {
-    "id": "6ac134f6-20de-48ae-a123-77b6e7648de7",
+    "id": "74da39db-9049-45cd-a3c6-a73d7f1b83fc",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Experience",
     "question": "Do you want new emails to display in a pop-up or a new tab?",
-    "reference": "Configure email | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/customer-service-hub-user-guide-email-admin#configure-email-pop-up-window"
   },
   {
-    "id": "4e56dc70-581e-401c-be5e-4b8f4396e264",
+    "id": "dbf010c6-a4d9-4731-9aed-f6c525f5fbdc",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Experience",
     "question": "Do you want CSRs to drag and drop recipient names across To, CC, and BCC?",
-    "reference": "Enable enhanced recipient control for email | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/add-recipient-control"
   },
   {
-    "id": "f8496ecc-3c37-497c-8090-203d2feb702c",
+    "id": "93a6ce9f-6aca-45dc-9304-71c1e496f827",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Experience",
     "question": "For emails sent from a queue, do you want to add a default signature?",
-    "reference": "Add a default signature template to a queue | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/add-signature-template-queue"
   },
   {
-    "id": "fa0b4730-a641-4689-8c01-a99b90f894d8",
+    "id": "d8c76f0e-fa99-46ec-a320-80bda95a9b11",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "General",
@@ -136,7 +136,7 @@
     "reference": ""
   },
   {
-    "id": "888e1fcb-c380-4d7b-a6bd-016e0df862c7",
+    "id": "20cbf01d-619a-4777-907d-ce8283167106",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Language",
@@ -144,31 +144,31 @@
     "reference": ""
   },
   {
-    "id": "41a37490-9c3d-492f-8184-8e79c0dbaade",
+    "id": "78a22632-9bec-4700-8b3d-cb214bc67ffa",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Language",
     "question": "Do you want templates available in different languages?",
-    "reference": "Configure the email experience in customer engagement apps | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/customer-service-hub-user-guide-email-font-admin#add-the-language-filter-in-the-email-template-selection-view"
   },
   {
-    "id": "349e2acc-5ff6-413a-a85a-cb17e5ca1ca8",
+    "id": "f2462972-07dd-4aa1-bd11-2f8e7e20bf73",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Sentiment",
     "question": "Do you want sentiment analysis applied to inbound emails?",
-    "reference": "Configure sentiment analysis for emails | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/configure-sentiment-analysis"
   },
   {
-    "id": "7b7f39f6-5591-4582-ac5c-f76d6e1fc34f",
+    "id": "3adda693-2ef1-4b16-a37d-202f4974f5eb",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Sentiment",
     "question": "Do you want to show sentiment analysis in the Inbox?",
-    "reference": "Configure sentiment analysis for emails | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/configure-sentiment-analysis#configure-sentiment-analysis-in-inbox"
   },
   {
-    "id": "a8f67051-d1a0-4d31-9290-195eaef3bba0",
+    "id": "6a249976-8fdd-48a7-867b-7c404767478f",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Subject",
@@ -176,7 +176,7 @@
     "reference": ""
   },
   {
-    "id": "7590e10b-522f-49cb-9d78-a5e0e77ed3ae",
+    "id": "8fe61445-f2f3-472d-b3f6-80aa5c10424f",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Subject",
@@ -184,7 +184,7 @@
     "reference": ""
   },
   {
-    "id": "84dec48a-73dd-468a-9c52-50e356d22254",
+    "id": "0cfe442a-2710-4e56-9dbb-461c651d47d9",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Template",
@@ -192,31 +192,31 @@
     "reference": ""
   },
   {
-    "id": "1c04e6bb-2928-47d4-a4df-4ff5f299ec17",
+    "id": "fe26698e-ff60-42e1-bb7c-ace5990d1456",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Template",
     "question": "Do you want CSRs to be able preview email templates before inserting?",
-    "reference": "Configure the email experience in customer engagement apps | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/customer-service-hub-user-guide-email-font-admin#customize-the-enhanced-email-template-selection-experience"
   },
   {
-    "id": "ff4b0ce2-d148-4254-92eb-3f86b6cb8519",
+    "id": "8d8d10ee-8d4c-4f55-9982-7487bafe2760",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Template",
     "question": "Do you want CSRs to create their own templates or use a pre-defined library?",
-    "reference": "Configure the email experience in customer engagement apps | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/customer-service-hub-user-guide-email-font-admin#add-the-required-permissions-for-related-tables"
   },
   {
-    "id": "286fa292-1642-4375-b93d-27ee7b821ab4",
+    "id": "87b6b988-f950-409d-b5e8-de54997bd1b1",
     "product": "Dynamics 365 Customer Service",
     "area": "Email",
     "subArea": "Template",
     "question": "Do you want email templates to align with the Intent Agent's Lines of Business?",
-    "reference": "Configure line of business for email templates | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/configure-lob-email-templates"
   },
   {
-    "id": "059054c7-908f-4df5-93aa-dcf84f1f2152",
+    "id": "77b853fa-fde4-48db-b192-01b61d5bee9c",
     "product": "Dynamics 365 Customer Service",
     "area": "Knowledge",
     "subArea": "Portal",
@@ -224,31 +224,31 @@
     "reference": ""
   },
   {
-    "id": "cda89378-3858-4e1c-be81-20fdd97b279e",
+    "id": "c5505c7a-7185-48a0-93fb-76dfb2d772a7",
     "product": "Dynamics 365 Customer Service",
     "area": "Knowledge",
     "subArea": "Portal",
     "question": "Do you want CSRs to be able to share an article URL with an end-customer?",
-    "reference": "Configure knowledge management | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/set-up-knowledge-management-embedded-knowledge-search#configure-knowledge-base-article-urls"
   },
   {
-    "id": "7822fc00-658a-4645-b714-b7f811322442",
+    "id": "2492f047-3aea-4676-adeb-7edc9202da28",
     "product": "Dynamics 365 Customer Service",
     "area": "Knowledge",
     "subArea": "Template",
     "question": "Do you want to use templates when creating knowledge articles?",
-    "reference": "Create templates for knowledge articles | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/use/create-templates-knowledge-article#create-a-knowledge-article-template"
   },
   {
-    "id": "cf71880c-0322-48ac-b296-f69792023423",
+    "id": "c4f3c744-30bf-47be-b3fc-3c60f21bc0a6",
     "product": "Dynamics 365 Customer Service",
     "area": "Knowledge",
     "subArea": "General",
     "question": "What categories do you want applied to your knowledge articles?",
-    "reference": "Create and manage categories | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/create-manage-categories#create-a-category"
   },
   {
-    "id": "97274a56-d307-45cd-838e-57fad4a2ded2",
+    "id": "1309f802-432b-4ae8-81b9-02355872a139",
     "product": "Dynamics 365 Customer Service",
     "area": "Knowledge",
     "subArea": "Process",
@@ -256,75 +256,75 @@
     "reference": ""
   },
   {
-    "id": "8f975c53-e718-4c43-ac65-47f6cb028696",
+    "id": "88d70e8f-a2ec-45e3-8611-0ea4885e5946",
     "product": "Dynamics 365 Customer Service",
     "area": "Knowledge",
     "subArea": "Experience",
     "question": "Do you want to match all or any words when searching for articles?",
-    "reference": "Configure knowledge management | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/set-up-knowledge-management-embedded-knowledge-search#set-up-knowledge-search-logic"
   },
   {
-    "id": "b5492a9b-fc1b-4fcd-b45f-d649334d4f4d",
+    "id": "8282efc3-db96-4d80-8ba0-33b05a53538a",
     "product": "Dynamics 365 Customer Service",
     "area": "Knowledge",
     "subArea": "Experience",
     "question": "Do you want a suggest-as-you-type flyout menu search experience?",
-    "reference": "Configure knowledge management | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/set-up-knowledge-management-embedded-knowledge-search#enable-the-suggest-as-you-type-option"
   },
   {
-    "id": "6f412a09-ff2e-4ea9-94bc-a47d78d4406f",
+    "id": "58f2290f-10db-4c6b-b87c-547249ff1664",
     "product": "Dynamics 365 Customer Service",
     "area": "Knowledge",
     "subArea": "Experience",
     "question": "Do you want to show recently viewed articles in the search experience?",
-    "reference": "Configure knowledge management | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/set-up-knowledge-management-embedded-knowledge-search#set-up-knowledge-search-logic"
   },
   {
-    "id": "65532722-724c-4dc7-b327-bb7dd6ffc54a",
+    "id": "2a8ce7f9-cda0-4598-8ea0-791cb9ab0a4c",
     "product": "Dynamics 365 Customer Service",
     "area": "Knowledge",
     "subArea": "Language",
     "question": "In which languages should a knowledge article be translated?",
-    "reference": "Work with knowledge articles | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/work-knowledge-articles#create-a-knowledge-article-translation"
   },
   {
-    "id": "a462adf7-f362-45b1-ab70-64ffa569578f",
+    "id": "a2dcf701-38f5-43e4-974b-f600ef9bb1aa",
     "product": "Dynamics 365 Customer Service",
     "area": "Knowledge",
     "subArea": "Language",
     "question": "Do you want the system to automatically translate knowledge articles?",
-    "reference": "Work with knowledge articles | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/work-knowledge-articles#create-a-knowledge-article-translation"
   },
   {
-    "id": "5d3a9a59-6494-429e-9514-5b6fa6690612",
+    "id": "00049ecd-ef31-4a68-997d-3b6d10cac0e3",
     "product": "Dynamics 365 Customer Service",
     "area": "Knowledge",
     "subArea": "External",
     "question": "Do you want ingest knowledge articles from external knowledge sources?",
-    "reference": "Set up external search providers | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/set-up-search-providers"
   },
   {
-    "id": "d152b4aa-133d-4107-92c9-0e3a72dbd72c",
+    "id": "a7eaf104-2633-492b-9ad5-258161ffe61c",
     "product": "Dynamics 365 Customer Service",
     "area": "Knowledge",
     "subArea": "Experience",
     "question": "SEARCH FILTERS",
-    "reference": "Customize knowledge article search filters | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/enable-knowledge-article-search-filters"
   },
   {
-    "id": "297d20c5-3da5-4e35-95b4-ed417074ada1",
+    "id": "98c083e8-967f-4dfc-a03f-d54c0162fcb2",
     "product": "Dynamics 365 Customer Service",
     "area": "Knowledge",
     "subArea": "Experience",
     "question": "Do you want to restrict the URLs used in knowledge articles to a given allowlist?",
-    "reference": "Configure origins allowlist for knowledge articles | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/configure-knowledge-article-origin-allow-list"
   },
   {
-    "id": "da6664df-db94-4b75-a27b-545b8a47f050",
+    "id": "c2275792-8d86-455b-be7f-d1bd6963f8fd",
     "product": "Dynamics 365 Customer Service",
     "area": "Knowledge",
     "subArea": "Experience",
     "question": "Do you want the knowledge search control to appear on a specific form?",
-    "reference": "Add the Knowledge Base Search control to Dynamics 365 Customer Service forms | Microsoft Learn"
+    "reference": "https://learn.microsoft.com/en-us/dynamics365/customer-service/administer/add-knowledge-base-search-control-forms"
   }
 ]

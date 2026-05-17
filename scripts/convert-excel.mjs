@@ -11,15 +11,25 @@ const wb = xlsx.readFile(join(root, 'OOTB Requirements Checklist .xlsx'));
 const ws = wb.Sheets[wb.SheetNames[0]];
 const rows = xlsx.utils.sheet_to_json(ws, { defval: '' });
 
+// Build a map of row index → hyperlink URL for the REFERENCE column (col E = index 4)
+const range = xlsx.utils.decode_range(ws['!ref']);
+const refColIndex = 4; // REFERENCE is the 5th column
+const hyperlinkByRow = {};
+for (let r = range.s.r + 1; r <= range.e.r; r++) {
+  const cell = ws[xlsx.utils.encode_cell({ r, c: refColIndex })];
+  if (cell?.l?.Target) hyperlinkByRow[r] = cell.l.Target;
+}
+
 const questions = rows
   .filter(r => r['QUESTION'] && String(r['QUESTION']).trim())
-  .map(r => ({
+  .map((r, i) => ({
     id: randomUUID(),
     product: String(r['PRODUCT'] ?? '').trim(),
     area: String(r['AREA'] ?? '').trim(),
     subArea: String(r['SUB-AREA'] ?? '').trim(),
     question: String(r['QUESTION'] ?? '').trim(),
-    reference: String(r['REFERENCE'] ?? '').trim(),
+    // row index in sheet = i + 1 (header is row 0)
+    reference: hyperlinkByRow[i + 1] ?? String(r['REFERENCE'] ?? '').trim(),
   }));
 
 mkdirSync(join(root, 'data'), { recursive: true });

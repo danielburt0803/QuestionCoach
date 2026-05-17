@@ -15,7 +15,10 @@ if (rows.length > 0) {
   console.log('First row:', rows[0]);
   console.log('Second row:', rows[1]);
 }
-// Try header option
-const rows2 = xlsx.utils.sheet_to_json(ws, { header: 1 });
-console.log('\nWith header:1, first 3 rows:');
-rows2.slice(0, 3).forEach(r => console.log(r));
+// Check hyperlinks on REFERENCE column cells
+console.log('\nHyperlinks in REFERENCE column (first 5 data rows):');
+const range = xlsx.utils.decode_range(ws['!ref']);
+for (let row = range.s.r + 1; row <= Math.min(range.s.r + 5, range.e.r); row++) {
+  const refCell = ws[xlsx.utils.encode_cell({ r: row, c: 4 })]; // column E = index 4
+  console.log(`Row ${row}: text="${refCell?.v}" url="${refCell?.l?.Target ?? '(none)'}"`);
+}
