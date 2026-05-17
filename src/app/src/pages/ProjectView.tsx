@@ -1,14 +1,14 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { makeStyles, tokens } from '@fluentui/react-components';
+import { LeftNav } from '../components/LeftNav/LeftNav';
 import { FilterPanel } from '../components/FilterPanel/FilterPanel';
 import { QuestionList } from '../components/QuestionList/QuestionList';
 import { TopBar } from '../components/TopBar/TopBar';
-import { ProjectDrawer } from '../components/ProjectDrawer/ProjectDrawer';
 import { useQuestions } from '../hooks/useQuestions';
 import { useProject, useUpdateProject } from '../hooks/useProjects';
 import { filterQuestions } from '../utils/filterQuestions';
-import type { ProjectFilters, QuestionProgress } from '../types';
-import { useState } from 'react';
+import type { ProjectFilters, QuestionProgress, Department } from '../types';
+import { EMPTY_FILTERS } from '../types';
 
 const useStyles = makeStyles({
   root: {
@@ -23,78 +23,91 @@ const useStyles = makeStyles({
     flex: 1,
     overflow: 'hidden',
   },
+  main: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+    overflow: 'hidden',
+  },
 });
 
-interface ProjectViewProps {
-  activeProjectId: string | null;
-  setActiveProjectId: (id: string | null) => void;
-  userName: string;
-}
-
-export function ProjectView({ activeProjectId, setActiveProjectId, userName }: ProjectViewProps) {
+export function ProjectView() {
   const styles = useStyles();
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
+  const [activeDepartmentId, setActiveDepartmentId] = useState<string | null>(null);
+
   const { data: questions = [], isLoading: questionsLoading } = useQuestions();
   const { data: project } = useProject(activeProjectId);
   const updateProject = useUpdateProject();
 
-  const filters: ProjectFilters = project?.filters ?? { product: null, area: null, subArea: null };
-  const filtered = filterQuestions(questions, filters);
+  const department: Department | undefined = project?.departments.find(d => d.id === activeDepartmentId);
+  const filters: ProjectFilters = department?.filters ?? EMPTY_FILTERS;
+  const progress = department?.progress ?? {};
+  const filtered = filterQuestions(questions, filters, progress);
 
   const pendingProgressRef = useRef<Record<string, QuestionProgress>>({});
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const flushProgress = useCallback(() => {
-    if (!activeProjectId || Object.keys(pendingProgressRef.current).length === 0) return;
-    const merged = { ...(project?.progress ?? {}), ...pendingProgressRef.current };
+    if (!activeProjectId || !activeDepartmentId || !project) return;
+    if (Object.keys(pendingProgressRef.current).length === 0) return;
+    const pending = pendingProgressRef.current;
     pendingProgressRef.current = {};
-    updateProject.mutate({ id: activeProjectId, patch: { progress: merged } });
-  }, [activeProjectId, project?.progress, updateProject]);
+    const updatedDepts = project.departments.map(d => {
+      if (d.id !== activeDepartmentId) return d;
+      return { ...d, progress: { ...d.progress, ...pending } };
+    });
+    updateProject.mutate({ id: activeProjectId, patch: { departments: updatedDepts } });
+  }, [activeProjectId, activeDepartmentId, project, updateProject]);
 
-  function handleProgressChange(questionId: string, progress: QuestionProgress) {
-    pendingProgressRef.current[questionId] = progress;
+  function handleProgressChange(questionId: string, prog: QuestionProgress) {
+    pendingProgressRef.current[questionId] = prog;
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     saveTimerRef.current = setTimeout(flushProgress, 1000);
   }
 
   function handleFiltersChange(newFilters: ProjectFilters) {
-    if (!activeProjectId) return;
-    updateProject.mutate({ id: activeProjectId, patch: { filters: newFilters } });
+    if (!activeProjectId || !activeDepartmentId || !project) return;
+    const updatedDepts = project.departments.map(d =>
+      d.id === activeDepartmentId ? { ...d, filters: newFilters } : d
+    );
+    updateProject.mutate({ id: activeProjectId, patch: { departments: updatedDepts } });
   }
 
-  function handleRename(name: string) {
-    if (!activeProjectId) return;
-    updateProject.mutate({ id: activeProjectId, patch: { name } });
+  function handleSelectDepartment(projectId: string | null, deptId: string | null) {
+    setActiveProjectId(projectId);
+    setActiveDepartmentId(deptId);
   }
 
   return (
     <div className={styles.root}>
       <TopBar
         project={project ?? null}
+        department={department ?? null}
         filteredQuestions={filtered}
-        userName={userName}
-        onOpenProjects={() => setDrawerOpen(true)}
-        onRenameProject={handleRename}
+        onRenameProject={name => activeProjectId && updateProject.mutate({ id: activeProjectId, patch: { name } })}
       />
       <div className={styles.body}>
-        <FilterPanel
-          questions={questions}
-          filters={filters}
-          onChange={handleFiltersChange}
+        <LeftNav
+          activeProjectId={activeProjectId}
+          activeDepartmentId={activeDepartmentId}
+          onSelectDepartment={handleSelectDepartment}
         />
-        <QuestionList
-          questions={filtered}
-          project={project ?? null}
-          isLoading={questionsLoading}
-          onProgressChange={handleProgressChange}
-        />
+        <div className={styles.main}>
+          <FilterPanel
+            questions={questions}
+            filters={filters}
+            progress={progress}
+            onChange={handleFiltersChange}
+          />
+          <QuestionList
+            questions={filtered}
+            progress={progress}
+            isLoading={questionsLoading}
+            onProgressChange={handleProgressChange}
+          />
+        </div>
       </div>
-      <ProjectDrawer
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        activeProjectId={activeProjectId}
-        onSelectProject={id => { setActiveProjectId(id); setDrawerOpen(false); }}
-      />
     </div>
   );
 }

@@ -30,10 +30,7 @@ export function useCreateProject() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (name: string) =>
-      apiFetch<Project>('/api/projects', {
-        method: 'POST',
-        body: JSON.stringify({ name, filters: { product: null, area: null, subArea: null } }),
-      }),
+      apiFetch<Project>('/api/projects', { method: 'POST', body: JSON.stringify({ name }) }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['projects'] }),
   });
 }
@@ -41,7 +38,7 @@ export function useCreateProject() {
 export function useUpdateProject() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, patch }: { id: string; patch: Partial<Pick<Project, 'name' | 'filters' | 'progress'>> }) =>
+    mutationFn: ({ id, patch }: { id: string; patch: Partial<Pick<Project, 'name' | 'departments'>> }) =>
       apiFetch<Project>(`/api/projects/${id}`, { method: 'PUT', body: JSON.stringify(patch) }),
     onMutate: async ({ id, patch }) => {
       await qc.cancelQueries({ queryKey: ['projects', id] });

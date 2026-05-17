@@ -1,5 +1,5 @@
 import { makeStyles, tokens, Text, ProgressBar, Spinner } from '@fluentui/react-components';
-import type { Question, Project, QuestionProgress } from '../../types';
+import type { Question, QuestionProgress } from '../../types';
 import { QuestionCard } from '../QuestionCard/QuestionCard';
 
 const useStyles = makeStyles({
@@ -23,9 +23,7 @@ const useStyles = makeStyles({
     color: tokens.colorNeutralForeground2,
     fontSize: tokens.fontSizeBase200,
   },
-  progressBar: {
-    flex: 1,
-  },
+  progressBar: { flex: 1 },
   empty: {
     display: 'flex',
     flexDirection: 'column',
@@ -50,12 +48,12 @@ const useStyles = makeStyles({
 
 interface QuestionListProps {
   questions: Question[];
-  project: Project | null;
+  progress: Record<string, QuestionProgress>;
   isLoading: boolean;
   onProgressChange: (questionId: string, progress: QuestionProgress) => void;
 }
 
-export function QuestionList({ questions, project, isLoading, onProgressChange }: QuestionListProps) {
+export function QuestionList({ questions, progress, isLoading, onProgressChange }: QuestionListProps) {
   const styles = useStyles();
 
   if (isLoading) {
@@ -72,20 +70,19 @@ export function QuestionList({ questions, project, isLoading, onProgressChange }
         <div className={styles.empty}>
           <Text size={500}>No questions match the current filters</Text>
           <Text size={300} style={{ color: tokens.colorNeutralForeground3 }}>
-            Try adjusting the filters in the sidebar
+            Select filters above or clear the active filters to see all questions
           </Text>
         </div>
       </div>
     );
   }
 
-  const answeredCount = questions.filter(q => project?.progress[q.id]?.status === 'answered').length;
+  const answeredCount = questions.filter(q => progress[q.id]?.status === 'answered').length;
   const coveredCount = questions.filter(q => {
-    const s = project?.progress[q.id]?.status;
+    const s = progress[q.id]?.status;
     return s === 'answered' || s === 'skipped';
   }).length;
 
-  // Group by area
   const grouped = questions.reduce<Record<string, Question[]>>((acc, q) => {
     (acc[q.area] ??= []).push(q);
     return acc;
@@ -93,22 +90,20 @@ export function QuestionList({ questions, project, isLoading, onProgressChange }
 
   return (
     <div className={styles.root}>
-      {project && (
-        <div className={styles.progressRow}>
-          <Text className={styles.progressLabel}>
-            {coveredCount} / {questions.length} covered
-          </Text>
-          <ProgressBar
-            className={styles.progressBar}
-            value={coveredCount / questions.length}
-            color={coveredCount === questions.length ? 'success' : 'brand'}
-            thickness="large"
-          />
-          <Text className={styles.progressLabel}>
-            {answeredCount} answered
-          </Text>
-        </div>
-      )}
+      <div className={styles.progressRow}>
+        <Text className={styles.progressLabel}>
+          {coveredCount} / {questions.length} covered
+        </Text>
+        <ProgressBar
+          className={styles.progressBar}
+          value={coveredCount / questions.length}
+          color={coveredCount === questions.length ? 'success' : 'brand'}
+          thickness="large"
+        />
+        <Text className={styles.progressLabel}>
+          {answeredCount} answered
+        </Text>
+      </div>
 
       {Object.entries(grouped).map(([area, qs]) => (
         <div key={area}>
@@ -122,7 +117,7 @@ export function QuestionList({ questions, project, isLoading, onProgressChange }
             <QuestionCard
               key={q.id}
               question={q}
-              progress={project?.progress[q.id]}
+              progress={progress[q.id]}
               onProgressChange={p => onProgressChange(q.id, p)}
             />
           ))}

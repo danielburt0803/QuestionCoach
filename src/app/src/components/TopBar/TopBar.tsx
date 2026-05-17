@@ -8,14 +8,14 @@ import {
   Tooltip,
 } from '@fluentui/react-components';
 import {
-  FolderOpenRegular,
   ArrowDownloadRegular,
   SignOutRegular,
   EditRegular,
   CheckmarkRegular,
   DismissRegular,
+  ChevronRightRegular,
 } from '@fluentui/react-icons';
-import type { Project, Question } from '../../types';
+import type { Project, Department, Question } from '../../types';
 import { exportToExcel } from '../../utils/exportToExcel';
 
 const useStyles = makeStyles({
@@ -24,7 +24,7 @@ const useStyles = makeStyles({
     alignItems: 'center',
     gap: tokens.spacingHorizontalM,
     padding: `0 ${tokens.spacingHorizontalL}`,
-    height: '56px',
+    height: '52px',
     backgroundColor: tokens.colorBrandBackground,
     color: tokens.colorNeutralForegroundOnBrand,
     flexShrink: 0,
@@ -34,7 +34,6 @@ const useStyles = makeStyles({
     fontWeight: tokens.fontWeightBold,
     fontSize: tokens.fontSizeBase400,
     color: tokens.colorNeutralForegroundOnBrand,
-    marginRight: tokens.spacingHorizontalS,
     whiteSpace: 'nowrap',
   },
   divider: {
@@ -43,24 +42,32 @@ const useStyles = makeStyles({
     backgroundColor: 'rgba(255,255,255,0.3)',
     flexShrink: 0,
   },
-  projectName: {
+  breadcrumb: {
     flex: 1,
     display: 'flex',
     alignItems: 'center',
-    gap: tokens.spacingHorizontalS,
+    gap: tokens.spacingHorizontalXS,
     minWidth: 0,
+    overflow: 'hidden',
   },
-  projectNameText: {
-    color: tokens.colorNeutralForegroundOnBrand,
-    fontWeight: tokens.fontWeightSemibold,
+  breadcrumbText: {
+    color: 'rgba(255,255,255,0.85)',
+    whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
+    fontSize: tokens.fontSizeBase300,
+  },
+  breadcrumbActive: {
+    color: tokens.colorNeutralForegroundOnBrand,
+    fontWeight: tokens.fontWeightSemibold,
+  },
+  breadcrumbSep: {
+    color: 'rgba(255,255,255,0.4)',
+    flexShrink: 0,
   },
   nameInput: {
     color: tokens.colorNeutralForeground1,
-    flex: 1,
-    maxWidth: '320px',
+    maxWidth: '240px',
   },
   iconBtn: {
     color: tokens.colorNeutralForegroundOnBrand,
@@ -75,13 +82,12 @@ const useStyles = makeStyles({
 
 interface TopBarProps {
   project: Project | null;
+  department: Department | null;
   filteredQuestions: Question[];
-  userName: string;
-  onOpenProjects: () => void;
   onRenameProject: (name: string) => void;
 }
 
-export function TopBar({ project, filteredQuestions, userName, onOpenProjects, onRenameProject }: TopBarProps) {
+export function TopBar({ project, department, filteredQuestions, onRenameProject }: TopBarProps) {
   const styles = useStyles();
   const [editing, setEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
@@ -96,13 +102,9 @@ export function TopBar({ project, filteredQuestions, userName, onOpenProjects, o
     setEditing(false);
   }
 
-  function cancelEdit() {
-    setEditing(false);
-  }
-
   function handleExport() {
-    if (!project) return;
-    exportToExcel(filteredQuestions, project);
+    if (!project || !department) return;
+    exportToExcel(filteredQuestions, project.name, department);
   }
 
   return (
@@ -110,37 +112,34 @@ export function TopBar({ project, filteredQuestions, userName, onOpenProjects, o
       <Text className={styles.appTitle}>Question Coach</Text>
       <div className={styles.divider} />
 
-      <Tooltip content="Open projects" relationship="label">
-        <Button
-          className={styles.iconBtn}
-          appearance="transparent"
-          icon={<FolderOpenRegular />}
-          onClick={onOpenProjects}
-        >
-          Projects
-        </Button>
-      </Tooltip>
-
-      <div className={styles.divider} />
-
-      <div className={styles.projectName}>
+      <div className={styles.breadcrumb}>
         {!project && (
-          <Text className={styles.projectNameText} style={{ opacity: 0.6 }}>
-            No project selected
+          <Text className={styles.breadcrumbText} style={{ opacity: 0.6 }}>
+            Select a project from the left panel
           </Text>
         )}
         {project && !editing && (
           <>
-            <Text className={styles.projectNameText}>{project.name}</Text>
+            <Text className={`${styles.breadcrumbText} ${!department ? styles.breadcrumbActive : ''}`}>
+              {project.name}
+            </Text>
             <Tooltip content="Rename project" relationship="label">
               <Button
                 className={styles.iconBtn}
                 appearance="transparent"
-                icon={<EditRegular fontSize={14} />}
+                icon={<EditRegular fontSize={12} />}
                 size="small"
                 onClick={startEdit}
               />
             </Tooltip>
+            {department && (
+              <>
+                <ChevronRightRegular fontSize={12} className={styles.breadcrumbSep} />
+                <Text className={`${styles.breadcrumbText} ${styles.breadcrumbActive}`}>
+                  {department.name}
+                </Text>
+              </>
+            )}
           </>
         )}
         {project && editing && (
@@ -149,17 +148,17 @@ export function TopBar({ project, filteredQuestions, userName, onOpenProjects, o
               className={styles.nameInput}
               value={editValue}
               onChange={(_e, d) => setEditValue(d.value)}
-              onKeyDown={e => { if (e.key === 'Enter') commitEdit(); if (e.key === 'Escape') cancelEdit(); }}
+              onKeyDown={e => { if (e.key === 'Enter') commitEdit(); if (e.key === 'Escape') setEditing(false); }}
               autoFocus
               size="small"
             />
             <Button appearance="transparent" icon={<CheckmarkRegular />} className={styles.iconBtn} onClick={commitEdit} size="small" />
-            <Button appearance="transparent" icon={<DismissRegular />} className={styles.iconBtn} onClick={cancelEdit} size="small" />
+            <Button appearance="transparent" icon={<DismissRegular />} className={styles.iconBtn} onClick={() => setEditing(false)} size="small" />
           </>
         )}
       </div>
 
-      {project && filteredQuestions.length > 0 && (
+      {project && department && filteredQuestions.length > 0 && (
         <Tooltip content="Export to Excel" relationship="label">
           <Button
             className={styles.iconBtn}
@@ -173,7 +172,6 @@ export function TopBar({ project, filteredQuestions, userName, onOpenProjects, o
       )}
 
       <div className={styles.divider} />
-      <Text className={styles.userText}>{userName}</Text>
       <Tooltip content="Sign out" relationship="label">
         <Button
           className={styles.iconBtn}

@@ -1,5 +1,5 @@
 import * as XLSX from 'xlsx';
-import type { Question, Project, QuestionStatus } from '../types';
+import type { Question, Department, QuestionStatus } from '../types';
 
 const STATUS_LABEL: Record<QuestionStatus, string> = {
   'not-started': 'Not Started',
@@ -8,9 +8,14 @@ const STATUS_LABEL: Record<QuestionStatus, string> = {
   skipped: 'Skipped',
 };
 
-export function exportToExcel(questions: Question[], project: Project, filename?: string) {
+export function exportToExcel(
+  questions: Question[],
+  projectName: string,
+  department: Department,
+  filename?: string,
+) {
   const rows = questions.map(q => {
-    const prog = project.progress[q.id];
+    const prog = department.progress[q.id];
     return {
       Product: q.product,
       Area: q.area,
@@ -28,5 +33,6 @@ export function exportToExcel(questions: Question[], project: Project, filename?
   ];
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Questions');
-  XLSX.writeFile(wb, filename ?? `${project.name.replace(/[^a-z0-9]/gi, '_')}_questions.xlsx`);
+  const safe = (s: string) => s.replace(/[^a-z0-9]/gi, '_');
+  XLSX.writeFile(wb, filename ?? `${safe(projectName)}_${safe(department.name)}_questions.xlsx`);
 }

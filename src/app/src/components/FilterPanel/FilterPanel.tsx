@@ -1,149 +1,253 @@
+import { useState } from 'react';
+import { makeStyles, tokens, Text, Button, Badge } from '@fluentui/react-components';
 import {
-  makeStyles,
-  tokens,
-  Text,
-  Dropdown,
-  Option,
-  Button,
-  Badge,
-} from '@fluentui/react-components';
-import { FilterRegular, DismissRegular } from '@fluentui/react-icons';
-import type { Question, ProjectFilters } from '../../types';
+  FilterRegular,
+  ChevronUpRegular,
+  ChevronDownRegular,
+  CheckmarkFilled,
+  DismissRegular,
+} from '@fluentui/react-icons';
+import type { Question, ProjectFilters, QuestionProgress, QuestionStatus } from '../../types';
 import { getFilterOptions } from '../../utils/filterQuestions';
+
+const STATUS_OPTIONS: { value: QuestionStatus; label: string }[] = [
+  { value: 'not-started', label: 'Not Started' },
+  { value: 'asked', label: 'Asked' },
+  { value: 'answered', label: 'Answered' },
+  { value: 'skipped', label: 'Skipped' },
+];
 
 const useStyles = makeStyles({
   root: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: tokens.spacingVerticalM,
-    padding: `${tokens.spacingVerticalL} ${tokens.spacingHorizontalM}`,
-    backgroundColor: tokens.colorNeutralBackground2,
-    borderRight: `1px solid ${tokens.colorNeutralStroke2}`,
-    minWidth: '220px',
-    maxWidth: '260px',
-    overflowY: 'auto',
+    borderBottom: `1px solid ${tokens.colorNeutralStroke2}`,
+    backgroundColor: tokens.colorNeutralBackground1,
+    flexShrink: 0,
   },
   header: {
     display: 'flex',
     alignItems: 'center',
     gap: tokens.spacingHorizontalS,
-    paddingBottom: tokens.spacingVerticalS,
-    borderBottom: `1px solid ${tokens.colorNeutralStroke2}`,
+    padding: `${tokens.spacingVerticalS} ${tokens.spacingHorizontalL}`,
+    cursor: 'pointer',
+    userSelect: 'none',
+    ':hover': { backgroundColor: tokens.colorNeutralBackground1Hover },
   },
-  section: {
+  headerTitle: {
+    fontWeight: tokens.fontWeightSemibold,
+    color: tokens.colorNeutralForeground1,
+  },
+  headerSpacer: { flex: 1 },
+  body: {
+    padding: `0 ${tokens.spacingHorizontalL} ${tokens.spacingVerticalM}`,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: tokens.spacingVerticalM,
+  },
+  group: {
     display: 'flex',
     flexDirection: 'column',
     gap: tokens.spacingVerticalXS,
   },
-  label: {
+  groupLabel: {
+    fontSize: tokens.fontSizeBase100,
     fontWeight: tokens.fontWeightSemibold,
-    color: tokens.colorNeutralForeground2,
-    fontSize: tokens.fontSizeBase200,
+    color: tokens.colorNeutralForeground3,
     textTransform: 'uppercase',
-    letterSpacing: '0.05em',
+    letterSpacing: '0.06em',
   },
-  dropdown: {
-    width: '100%',
+  tilesRow: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: tokens.spacingHorizontalXS,
   },
-  clearButton: {
-    marginTop: tokens.spacingVerticalS,
+  tile: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
+    padding: `3px ${tokens.spacingHorizontalS}`,
+    borderRadius: tokens.borderRadiusMedium,
+    border: `1px solid ${tokens.colorNeutralStroke1}`,
+    backgroundColor: tokens.colorNeutralBackground1,
+    color: tokens.colorNeutralForeground1,
+    fontSize: tokens.fontSizeBase200,
+    cursor: 'pointer',
+    userSelect: 'none',
+    transition: 'background 0.1s, border-color 0.1s, color 0.1s',
+    ':hover': {
+      backgroundColor: tokens.colorNeutralBackground2Hover,
+      borderColor: tokens.colorNeutralStroke1Hover,
+    },
   },
-  activeCount: {
-    marginLeft: 'auto',
+  tileSelected: {
+    backgroundColor: tokens.colorBrandBackground,
+    borderColor: tokens.colorBrandBackground,
+    color: tokens.colorNeutralForegroundOnBrand,
+    ':hover': {
+      backgroundColor: tokens.colorBrandBackgroundHover,
+      borderColor: tokens.colorBrandBackgroundHover,
+    },
+  },
+  clearBtn: {
+    alignSelf: 'flex-start',
+    marginTop: tokens.spacingVerticalXS,
+  },
+  collapsedSummary: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: tokens.spacingHorizontalXS,
+    flex: 1,
   },
 });
+
+interface TileGroupProps {
+  label: string;
+  options: string[];
+  selected: string[];
+  onToggle: (value: string) => void;
+}
+
+function TileGroup({ label, options, selected, onToggle }: TileGroupProps) {
+  const styles = useStyles();
+  if (options.length === 0) return null;
+  return (
+    <div className={styles.group}>
+      <Text className={styles.groupLabel}>{label}</Text>
+      <div className={styles.tilesRow}>
+        {options.map(opt => {
+          const isSelected = selected.includes(opt);
+          return (
+            <div
+              key={opt}
+              className={`${styles.tile} ${isSelected ? styles.tileSelected : ''}`}
+              onClick={() => onToggle(opt)}
+              role="checkbox"
+              aria-checked={isSelected}
+              tabIndex={0}
+              onKeyDown={e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); onToggle(opt); } }}
+            >
+              {isSelected && <CheckmarkFilled fontSize={11} />}
+              {opt}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 interface FilterPanelProps {
   questions: Question[];
   filters: ProjectFilters;
+  progress: Record<string, QuestionProgress>;
   onChange: (filters: ProjectFilters) => void;
 }
 
-export function FilterPanel({ questions, filters, onChange }: FilterPanelProps) {
+export function FilterPanel({ questions, filters, progress: _progress, onChange }: FilterPanelProps) {
   const styles = useStyles();
+  const [expanded, setExpanded] = useState(true);
   const { products, areas, subAreas } = getFilterOptions(questions, filters);
 
-  const activeCount = [filters.product, filters.area, filters.subArea].filter(Boolean).length;
+  const activeCount =
+    filters.products.length + filters.areas.length + filters.subAreas.length + filters.statuses.length;
+
+  const statusOptions = STATUS_OPTIONS.map(s => s.label);
+  const selectedStatusLabels = filters.statuses.map(s => STATUS_OPTIONS.find(o => o.value === s)!.label);
+
+  function toggleValue(key: keyof ProjectFilters, value: string) {
+    if (key === 'statuses') {
+      const statusValue = STATUS_OPTIONS.find(o => o.label === value)?.value;
+      if (!statusValue) return;
+      const current = filters.statuses;
+      const next = current.includes(statusValue)
+        ? current.filter(s => s !== statusValue)
+        : [...current, statusValue];
+      onChange({ ...filters, statuses: next });
+      return;
+    }
+    const current = filters[key] as string[];
+    const next = current.includes(value)
+      ? current.filter(v => v !== value)
+      : [...current, value];
+    onChange({ ...filters, [key]: next });
+  }
 
   function handleClear() {
-    onChange({ product: null, area: null, subArea: null });
+    onChange({ products: [], areas: [], subAreas: [], statuses: [] });
   }
 
-  function handleProduct(value: string | null) {
-    onChange({ product: value, area: null, subArea: null });
-  }
-
-  function handleArea(value: string | null) {
-    onChange({ ...filters, area: value, subArea: null });
-  }
-
-  function handleSubArea(value: string | null) {
-    onChange({ ...filters, subArea: value });
-  }
+  const allActiveTileLabels = [
+    ...filters.products,
+    ...filters.areas,
+    ...filters.subAreas,
+    ...filters.statuses.map(s => STATUS_OPTIONS.find(o => o.value === s)?.label ?? s),
+  ];
 
   return (
     <div className={styles.root}>
-      <div className={styles.header}>
-        <FilterRegular fontSize={18} />
-        <Text weight="semibold" size={400}>Filters</Text>
-        {activeCount > 0 && (
-          <Badge appearance="filled" color="brand" size="small" className={styles.activeCount}>
-            {activeCount}
-          </Badge>
+      <div className={styles.header} onClick={() => setExpanded(e => !e)}>
+        <FilterRegular fontSize={16} />
+        <Text className={styles.headerTitle}>Filters</Text>
+
+        {!expanded && activeCount > 0 && (
+          <div className={styles.collapsedSummary}>
+            {allActiveTileLabels.map(label => (
+              <Badge key={label} appearance="filled" color="brand" size="small">{label}</Badge>
+            ))}
+          </div>
         )}
+
+        {!expanded && activeCount === 0 && <div className={styles.headerSpacer} />}
+        {expanded && <div className={styles.headerSpacer} />}
+
+        {activeCount > 0 && (
+          <Badge appearance="filled" color="brand" size="small">{activeCount} active</Badge>
+        )}
+        {expanded
+          ? <ChevronUpRegular fontSize={16} style={{ color: tokens.colorNeutralForeground3 }} />
+          : <ChevronDownRegular fontSize={16} style={{ color: tokens.colorNeutralForeground3 }} />
+        }
       </div>
 
-      <div className={styles.section}>
-        <Text className={styles.label}>Product</Text>
-        <Dropdown
-          className={styles.dropdown}
-          placeholder="All products"
-          value={filters.product ?? ''}
-          selectedOptions={filters.product ? [filters.product] : []}
-          onOptionSelect={(_e, d) => handleProduct(d.optionValue === filters.product ? null : (d.optionValue ?? null))}
-        >
-          {products.map(p => <Option key={p} value={p}>{p}</Option>)}
-        </Dropdown>
-      </div>
-
-      <div className={styles.section}>
-        <Text className={styles.label}>Area</Text>
-        <Dropdown
-          className={styles.dropdown}
-          placeholder="All areas"
-          value={filters.area ?? ''}
-          selectedOptions={filters.area ? [filters.area] : []}
-          disabled={areas.length === 0}
-          onOptionSelect={(_e, d) => handleArea(d.optionValue === filters.area ? null : (d.optionValue ?? null))}
-        >
-          {areas.map(a => <Option key={a} value={a}>{a}</Option>)}
-        </Dropdown>
-      </div>
-
-      <div className={styles.section}>
-        <Text className={styles.label}>Sub-Area</Text>
-        <Dropdown
-          className={styles.dropdown}
-          placeholder="All sub-areas"
-          value={filters.subArea ?? ''}
-          selectedOptions={filters.subArea ? [filters.subArea] : []}
-          disabled={subAreas.length === 0}
-          onOptionSelect={(_e, d) => handleSubArea(d.optionValue === filters.subArea ? null : (d.optionValue ?? null))}
-        >
-          {subAreas.map(s => <Option key={s} value={s}>{s}</Option>)}
-        </Dropdown>
-      </div>
-
-      {activeCount > 0 && (
-        <Button
-          className={styles.clearButton}
-          appearance="subtle"
-          icon={<DismissRegular />}
-          onClick={handleClear}
-          size="small"
-        >
-          Clear filters
-        </Button>
+      {expanded && (
+        <div className={styles.body}>
+          {products.length > 1 && (
+            <TileGroup
+              label="Product"
+              options={products}
+              selected={filters.products}
+              onToggle={v => toggleValue('products', v)}
+            />
+          )}
+          <TileGroup
+            label="Area"
+            options={areas}
+            selected={filters.areas}
+            onToggle={v => toggleValue('areas', v)}
+          />
+          <TileGroup
+            label="Sub-Area"
+            options={subAreas}
+            selected={filters.subAreas}
+            onToggle={v => toggleValue('subAreas', v)}
+          />
+          <TileGroup
+            label="Status"
+            options={statusOptions}
+            selected={selectedStatusLabels}
+            onToggle={v => toggleValue('statuses', v)}
+          />
+          {activeCount > 0 && (
+            <Button
+              className={styles.clearBtn}
+              appearance="subtle"
+              size="small"
+              icon={<DismissRegular />}
+              onClick={handleClear}
+            >
+              Clear all filters
+            </Button>
+          )}
+        </div>
       )}
     </div>
   );

@@ -15,17 +15,25 @@ export interface QuestionProgress {
 }
 
 export interface ProjectFilters {
-  product: string | null;
-  area: string | null;
-  subArea: string | null;
+  products: string[];
+  areas: string[];
+  subAreas: string[];
+  statuses: QuestionStatus[];
+}
+
+export interface Department {
+  id: string;
+  name: string;
+  filters: ProjectFilters;
+  progress: Record<string, QuestionProgress>;
+  createdAt: string;
 }
 
 export interface Project {
   id: string;
   userId: string;
   name: string;
-  filters: ProjectFilters;
-  progress: Record<string, QuestionProgress>;
+  departments: Department[];
   createdAt: string;
   updatedAt: string;
 }
