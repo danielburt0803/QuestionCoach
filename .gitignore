@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+.env.local
+local.settings.json
+*.log
+.DS_Store
+Thumbs.db
+# SWA CLI temp dirs
+*-swa-oryx/
+# npm temp
+package-lock.json

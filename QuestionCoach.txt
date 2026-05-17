@@ -1,0 +1,23 @@
+# Task
+Your job is to build a web app that serves as a Question Coach for Functional Consultants and Solution Architects who are facilitating customer workshops to elicit requirements for Dynamics 365 Contact Center and Dynamics 365 Customer Service software implementations.
+
+# Context
+- Functional Consultants and Solution Architects need a detailed understanding of customer requirements before starting an implementation project, so they facilitate workshops with the customer to understand their requirements.  These requirements are documented as User Stories.  In order to be thorough and methodical, FCs and SAs use a checklist of questions that comprehensively covers the full range of the out-of-the-box functional product capability.  This app will serve up the questions to the FCs and SAs so that they be assured they have covered all the capability during the workshops.
+- The capabilities of the products are detailed here https://learn.microsoft.com/en-us/dynamics365/contact-center/ and https://learn.microsoft.com/en-us/dynamics365/customer-service/
+- The attached Excel shows an example of the questions 
+
+# Requirements
+Follow these rules exactly:
+- Use an Azure Static Web App for the app structure
+- Always use Azure resources where additional infrastructure services are needed
+- Create bicep files so that the infrastructure can be deployed easily in other tenants
+- Create a build.md file to record and elucidate build decisions
+- Create a "memory" file so that we can pause and continue the project without losing context
+- Use the Product, Area, Sub-Area, Question and Reference columns from the Excel as data fields
+
+# App Experience
+- Visually appealing
+- Easy and intuitive to use
+- Allow the question list to be filtered by Product, Area and Sub-Area
+- Allow the user to create a unique "Project" where the filters are saved
+- When displaying the questions, show the Question and Reference fields
