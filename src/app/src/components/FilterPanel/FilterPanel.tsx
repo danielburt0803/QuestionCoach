@@ -75,16 +75,16 @@ const useStyles = makeStyles({
     transition: 'background 0.1s, border-color 0.1s, color 0.1s',
     ':hover': {
       backgroundColor: tokens.colorNeutralBackground2Hover,
-      borderColor: tokens.colorNeutralStroke1Hover,
+      border: `1px solid ${tokens.colorNeutralStroke1Hover}`,
     },
   },
   tileSelected: {
     backgroundColor: tokens.colorBrandBackground,
-    borderColor: tokens.colorBrandBackground,
+    border: `1px solid ${tokens.colorBrandBackground}`,
     color: tokens.colorNeutralForegroundOnBrand,
     ':hover': {
       backgroundColor: tokens.colorBrandBackgroundHover,
-      borderColor: tokens.colorBrandBackgroundHover,
+      border: `1px solid ${tokens.colorBrandBackgroundHover}`,
     },
   },
   clearBtn: {
