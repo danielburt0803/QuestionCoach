@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   makeStyles,
   tokens,
@@ -54,11 +54,6 @@ const useStyles = makeStyles({
     cursor: 'pointer',
     userSelect: 'none',
   },
-  statusBadgeInactive: {
-    opacity: 0.45,
-    cursor: 'pointer',
-    userSelect: 'none',
-  },
   meta: {
     display: 'flex',
     alignItems: 'center',
@@ -91,18 +86,29 @@ interface QuestionCardProps {
 
 export function QuestionCard({ question, progress, onProgressChange }: QuestionCardProps) {
   const styles = useStyles();
-  const status: QuestionStatus = progress?.status ?? 'not-started';
+  const [localStatus, setLocalStatus] = useState<QuestionStatus>(progress?.status ?? 'not-started');
   const notes = progress?.notes ?? '';
   const [localNotes, setLocalNotes] = useState(notes);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Sync from server when progress changes (e.g. after save or external update)
+  useEffect(() => {
+    setLocalStatus(progress?.status ?? 'not-started');
+  }, [progress?.status]);
+
+  const handleStatusClick = useCallback((s: QuestionStatus) => {
+    if (localStatus === s) return;
+    setLocalStatus(s);
+    onProgressChange({ status: s, notes: localNotes });
+  }, [localStatus, localNotes, onProgressChange]);
 
   const handleNotesChange = useCallback((value: string) => {
     setLocalNotes(value);
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
-      onProgressChange({ status, notes: value });
+      onProgressChange({ status: localStatus, notes: value });
     }, 800);
-  }, [status, onProgressChange]);
+  }, [localStatus, onProgressChange]);
 
   const isReference = question.reference.startsWith('http');
 
@@ -116,16 +122,16 @@ export function QuestionCard({ question, progress, onProgressChange }: QuestionC
           <div className={styles.statusRow}>
             {STATUS_OPTIONS.map(s => {
               const cfg = STATUS_CONFIG[s];
-              const isActive = status === s;
+              const isActive = localStatus === s;
               return (
                 <Badge
                   key={s}
-                  className={isActive ? styles.statusBadge : styles.statusBadgeInactive}
-                  appearance={isActive ? 'filled' : 'outline'}
+                  className={styles.statusBadge}
+                  appearance={isActive ? 'filled' : 'tint'}
                   color={cfg.color}
                   size="small"
                   icon={<cfg.Icon />}
-                  onClick={() => { if (!isActive) onProgressChange({ status: s, notes: localNotes }); }}
+                  onClick={() => handleStatusClick(s)}
                 >
                   {cfg.label}
                 </Badge>
