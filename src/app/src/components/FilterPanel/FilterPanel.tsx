@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { makeStyles, tokens, Text, Button, Badge } from '@fluentui/react-components';
+import { makeStyles, tokens, Text, Button, Badge, Radio, RadioGroup } from '@fluentui/react-components';
 import {
   FilterRegular,
   ChevronUpRegular,
@@ -150,9 +150,6 @@ export function FilterPanel({ questions, filters, progress: _progress, onChange 
   const activeCount =
     filters.products.length + filters.areas.length + filters.subAreas.length + filters.statuses.length;
 
-  const statusOptions = STATUS_OPTIONS.map(s => s.label);
-  const selectedStatusLabels = filters.statuses.map(s => STATUS_OPTIONS.find(o => o.value === s)!.label);
-
   function toggleValue(key: keyof ProjectFilters, value: string) {
     if (key === 'statuses') {
       const statusValue = STATUS_OPTIONS.find(o => o.label === value)?.value;
@@ -210,7 +207,7 @@ export function FilterPanel({ questions, filters, progress: _progress, onChange 
 
       {expanded && (
         <div className={styles.body}>
-          {products.length > 1 && (
+          {products.length > 0 && (
             <TileGroup
               label="Product"
               options={products}
@@ -230,12 +227,24 @@ export function FilterPanel({ questions, filters, progress: _progress, onChange 
             selected={filters.subAreas}
             onToggle={v => toggleValue('subAreas', v)}
           />
-          <TileGroup
-            label="Status"
-            options={statusOptions}
-            selected={selectedStatusLabels}
-            onToggle={v => toggleValue('statuses', v)}
-          />
+          <div className={styles.group}>
+            <Text className={styles.groupLabel}>Status</Text>
+            <RadioGroup
+              value={filters.statuses.length === 1 ? filters.statuses[0] : 'all'}
+              onChange={(_e, d) => {
+                if (d.value === 'all') {
+                  onChange({ ...filters, statuses: [] });
+                } else {
+                  onChange({ ...filters, statuses: [d.value as QuestionStatus] });
+                }
+              }}
+            >
+              <Radio value="all" label="All statuses" />
+              {STATUS_OPTIONS.map(s => (
+                <Radio key={s.value} value={s.value} label={s.label} />
+              ))}
+            </RadioGroup>
+          </div>
           {activeCount > 0 && (
             <Button
               className={styles.clearBtn}
